@@ -71,35 +71,33 @@ $(".card .list-group").sortable({
   scroll: false,
   tolerance: "pointer",
   helper: "clone",
-  active: function(event) {
-    console.log("active", this);
+  activate: function(event, ui) {
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
-  deactivate: function(event) {
-    console.log("deactivate", this);
+  deactivate: function(event, ui) {
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   over: function(event) {
-    console.log("over", event.target);
+    $(event.target).addClass("dropover-active");
   },
   out: function(event) {
-    console.log("out", event.target);
+    $(event.target).removeClass("dropover-active");
   },
   update: function() {
     var tempArr = [];
 
     $(this).children().each(function(){
-      var text = $(this)
-      .find("p")
-      .text()
-      .trim();
-
-      var date = $(this)
-      .find("span")
-      .text()
-      .trim();
-
       tempArr.push({
-        text: text,
-        date: date
+        text: $(this)
+          .find("p")
+          .text()
+          .trim(),
+        date: $(this)
+          .find("span")
+          .text()
+          .trim()
       });
     });
 
@@ -260,5 +258,12 @@ $("#remove-tasks").on("click", function() {
   }
   saveTasks();
 });
+
 // load tasks for the first time
 loadTasks();
+
+setInterval(function() {
+  $(".card .list-group-item").each(function() {
+    auditTask($(this));
+  });
+}, 1800000);
